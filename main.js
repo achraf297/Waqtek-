@@ -130,13 +130,11 @@ const services = [
 
 let tickets = [];
 
-// تحميل الصفحة
 document.addEventListener('DOMContentLoaded', function() {
     loadServices();
     loadTickets();
 });
 
-// تحميل الخدمات
 function loadServices() {
     const container = document.getElementById('servicesContainer');
     container.innerHTML = '';
@@ -183,7 +181,6 @@ function loadServices() {
     });
 }
 
-// نص حالة الخدمة
 function getStatusText(status) {
     switch(status) {
         case 'open': return 'مفتوح';
@@ -193,18 +190,15 @@ function getStatusText(status) {
     }
 }
 
-// أخذ تذكرة
 function takeTicket(serviceId) {
     const service = services.find(s => s.id === serviceId);
     if (!service || service.status === 'closed') return;
     
-    // التحقق من وجود تذكرة مسبقة
     if (tickets.find(t => t.serviceId === serviceId)) {
         showAlert('لديك تذكرة لهذه الخدمة بالفعل!', 'warning');
         return;
     }
     
-    // إنشاء تذكرة جديدة
     const ticket = {
         id: 'TKT' + Date.now(),
         serviceId: serviceId,
@@ -224,7 +218,6 @@ function takeTicket(serviceId) {
     showAlert('تم إنشاء التذكرة بنجاح!', 'success');
 }
 
-// عرض نافذة التذكرة
 function showTicketModal(ticket) {
     const modal = new bootstrap.Modal(document.getElementById('ticketModal'));
     const modalBody = document.getElementById('modalBody');
@@ -309,7 +302,6 @@ function loadTickets() {
     });
 }
 
-// حساب الوقت المنقضي
 function getTimeAgo(time) {
     const now = new Date();
     const diff = Math.floor((now - time) / 60000);
@@ -321,7 +313,6 @@ function getTimeAgo(time) {
     return `منذ ${hours} ساعة`;
 }
 
-// إلغاء التذكرة
 function cancelTicket(ticketId) {
     if (confirm('هل تريد إلغاء هذه التذكرة؟')) {
         tickets = tickets.filter(t => t.id !== ticketId);
@@ -330,16 +321,14 @@ function cancelTicket(ticketId) {
     }
 }
 
-// التنقل السلس
 function scrollToSection(sectionId) {
     document.getElementById(sectionId).scrollIntoView({
         behavior: 'smooth'
     });
 }
 
-// عرض التنبيهات
 function showAlert(message, type = 'info') {
-    // إزالة التنبيهات السابقة
+    
     const existingAlerts = document.querySelectorAll('.custom-alert');
     existingAlerts.forEach(alert => alert.remove());
     
@@ -364,7 +353,6 @@ function showAlert(message, type = 'info') {
     
     document.body.appendChild(alert);
     
-    // إزالة التنبيه تلقائياً بعد 4 ثوانِ
     setTimeout(() => {
         if (alert.parentElement) {
             alert.style.opacity = '0';
@@ -374,15 +362,12 @@ function showAlert(message, type = 'info') {
     }, 4000);
 }
 
-// تحديث حالة الخدمات كل دقيقة (محاكاة)
 setInterval(() => {
     services.forEach(service => {
         if (service.status !== 'closed') {
-            // تحديث عشوائي للطابور
             const change = Math.floor(Math.random() * 3) - 1; // -1, 0, أو 1
             service.queue = Math.max(0, service.queue + change);
             
-            // تحديث وقت الانتظار بناء على حجم الطابور
             if (service.queue === 0) {
                 service.wait = '5 دقائق';
             } else if (service.queue < 5) {
@@ -404,13 +389,11 @@ setInterval(() => {
         }
     });
     
-    // إعادة تحميل الخدمات إذا كانت مرئية
     if (document.getElementById('services').getBoundingClientRect().top < window.innerHeight) {
         loadServices();
     }
-}, 60000); // كل دقيقة
+}, 60000);
 
-// تحديث ترتيب التذاكر كل 30 ثانية
 setInterval(() => {
     let updated = false;
     tickets.forEach(ticket => {
@@ -423,4 +406,4 @@ setInterval(() => {
     if (updated) {
         loadTickets();
     }
-}, 30000); // كل 30 ثانية
+}, 30000);
